@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pandas
+scikit-learn
+requests
+earthengine-api
+google-auth
+oauth2client

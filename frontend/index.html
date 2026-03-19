@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resilience-Mesh | AI Disaster Warning System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="header">
+                <h1>Resilience-Mesh</h1>
+                <p>AI-Driven Disaster Early Warning System</p>
+                <div class="badge">Mapathon Demo</div>
+            </div>
+            
+            <div class="control-panel">
+                <h3>Live Risk Analysis</h3>
+                <p class="description">Scan an area to cross-reference OSM data, elevation, and Open-Meteo flood forecast.</p>
+                
+                <div class="input-group">
+                    <label>District/Region Center (Lat, Lon)</label>
+                    <input type="text" id="coordsInput" value="24.8949, 91.8687" placeholder="e.g. 24.8949, 91.8687 (Sylhet)">
+                </div>
+                
+                <div class="input-group">
+                    <label>Scan Radius (meters)</label>
+                    <input type="number" id="radiusInput" value="1500" max="5000">
+                </div>
+                
+                <button id="scanBtn" class="primary-btn">
+                    <span id="btnText">Run AI Safety Classifier</span>
+                    <span id="btnLoader" class="loader hidden"></span>
+                </button>
+            </div>
+
+            <div id="resultsPanel" class="results-panel hidden">
+                <h3>Analysis Results</h3>
+                <div class="stat-card">
+                    <span class="stat-label">Forecasted Rainfall</span>
+                    <span class="stat-value" id="valRain">-- mm</span>
+                </div>
+                
+                <div class="safety-meters">
+                    <div class="meter safe">
+                        <div class="meter-icon">🟢</div>
+                        <div class="meter-info">
+                            <span class="m-title">Safe Structures</span>
+                            <span class="m-value" id="valSafe">0</span>
+                        </div>
+                    </div>
+                    <div class="meter at-risk">
+                        <div class="meter-icon">🟡</div>
+                        <div class="meter-info">
+                            <span class="m-title">At-Risk Buildings</span>
+                            <span class="m-value" id="valAtRisk">0</span>
+                        </div>
+                    </div>
+                    <div class="meter danger">
+                        <div class="meter-icon">🔴</div>
+                        <div class="meter-info">
+                            <span class="m-title">Danger Zone</span>
+                            <span class="m-value" id="valDanger">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert-action">
+                    <p class="warning-text">⚠️ Threshold Exceeded: <span id="valDangerCount">0</span> households in danger.</p>
+                    <button class="alert-btn" onclick="alert('Demo: Sending Voice/SMS alerts via local telecom API to vulnerable communities...')">
+                        Broadcast Last-Mile Alerts
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Map View -->
+        <div class="map-view">
+            <div id="map"></div>
+            <div class="legend">
+                <h4>Building Safety Index</h4>
+                <div class="legend-item"><span class="dot safe"></span> Safe (Flood Depth < 0.3m)</div>
+                <div class="legend-item"><span class="dot at-risk"></span> At-Risk (Depth 0.3 - 1.0m)</div>
+                <div class="legend-item"><span class="dot danger"></span> Danger (Depth > 1.0m)</div>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
