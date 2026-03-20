@@ -39,11 +39,19 @@
                 </button>
             </div>
 
-            <div id="resultsPanel" class="results-panel hidden">
+            <div id="resultsPanel" class="results-panel">
                 <h3>Analysis Results</h3>
                 <div class="stat-card">
                     <span class="stat-label">Forecasted Rainfall</span>
                     <span class="stat-value" id="valRain">-- mm</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Max Wind Forecast</span>
+                    <span class="stat-value" id="valWind">-- km/h</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">River Discharge</span>
+                    <span class="stat-value" id="valRiver">-- m³/s</span>
                 </div>
                 
                 <div class="safety-meters">
@@ -83,10 +91,13 @@
         <div class="map-view">
             <div id="map"></div>
             <div class="legend">
-                <h4>Building Safety Index</h4>
-                <div class="legend-item"><span class="dot safe"></span> Safe (Flood Depth < 0.3m)</div>
-                <div class="legend-item"><span class="dot at-risk"></span> At-Risk (Depth 0.3 - 1.0m)</div>
-                <div class="legend-item"><span class="dot danger"></span> Danger (Depth > 1.0m)</div>
+                <h4>Unified Safety Index</h4>
+                <div class="legend-item"><span class="dot safe"></span> Safe (All hazards low)</div>
+                <div class="legend-item"><span class="dot at-risk"></span> At-Risk (Minor hazard detected)</div>
+                <div class="legend-item"><span class="dot danger"></span> Danger (Critical threat level)</div>
+                <hr style="margin: 8px 0; border: 0; border-top: 1px solid var(--glass-border);">
+                <div class="legend-item"><span class="box flood"></span> Flood Zone (SAR Scan)</div>
+                <div class="legend-item"><span class="box landslide"></span> Steep Slope (>15°)</div>
             </div>
         </div>
     </div>

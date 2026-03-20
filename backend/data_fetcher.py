@@ -4,25 +4,36 @@ import math
 
 def fetch_weather_forecast(lat, lon):
     """
-    Fetch 7-day precipitation forecast and wind forecast from Open-Meteo.
-    Returns (total precipitation in mm, maximum wind speed in km/h).
+    Fetches rainfall and wind speed forecast from Open-Meteo.
     """
-    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=precipitation,wind_speed_10m&timezone=auto"
     try:
-        response = requests.get(url, timeout=10)
-        data = response.json()
+        url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=precipitation,wind_speed_10m&timezone=auto"
+        res = requests.get(url, timeout=10)
+        data = res.json()
         
-        hourly = data.get("hourly", {})
-        precip_list = hourly.get("precipitation", [])
-        wind_list = hourly.get("wind_speed_10m", [])
-        
-        total_precip = sum(precip_list) if precip_list else 100.0
-        max_wind = max(wind_list) if wind_list else 20.0
-        
-        return total_precip, max_wind
+        # Get max precipitation in next 24h
+        rain_max = max(data['hourly']['precipitation'][:24])
+        wind_max = max(data['hourly']['wind_speed_10m'][:24])
+        return float(rain_max), float(wind_max)
     except Exception as e:
-        print(f"Error fetching weather: {e}")
-        return 100.0, 20.0 # fallback defaults
+        print(f"Weather API failed: {e}")
+        return 0.0, 0.0
+
+def fetch_river_discharge(lat, lon):
+    """
+    Fetches real-time river discharge (m³/s) from Open-Meteo's Global Flood API.
+    A free alternative to BWDB for regional river flow monitoring.
+    """
+    try:
+        url = f"https://flood-api.open-meteo.com/v1/flood?latitude={lat}&longitude={lon}&daily=river_discharge&timezone=auto"
+        res = requests.get(url, timeout=10)
+        data = res.json()
+        
+        if 'daily' in data and len(data['daily']['river_discharge']) > 0:
+            return float(data['daily']['river_discharge'][0])
+        return 0.0
+    except Exception:
+        return 0.0
 
 def fetch_overpass_data(lat, lon, radius=1000):
     """
@@ -45,7 +56,7 @@ def fetch_overpass_data(lat, lon, radius=1000):
     """
     
     try:
-        response = requests.post(overpass_url, data={'data': overpass_query}, timeout=30)
+        response = requests.post(overpass_url, data={'data': overpass_query}, timeout=60)
         return response.json()
     except Exception as e:
         print(f"Error fetching OSM data: {e}")
